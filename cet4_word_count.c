@@ -31,47 +31,46 @@ int main()
 		return -1;
 	}
 	fgets(test, 3000, out);
-	for (int a = 0; a < 300; a++)
+	for (int a = 0; a < 3000; a++)
 	{
 		printf("%c", test[a]);
 	}
 	puts(" ");
-puts("print end.");
+	puts("print end.");
 //***************1l*8		put data for outfile.dat end
 
 //**********************************
 //		kiner program
-for (i = 0; i < sizeof(test); i++)
-{
-	if (test[i] == '\0')	break;	//字符结束标记
-	/*if (test[i] == ' '||(!((test[0]>='a' && test[0] <= 'z') || (test[0]>='A' && test[0] <= 'Z'))))	*/
-	if (!((test[0] >= 'a' && test[0] <= 'z') || (test[0] >= 'A' && test[0] <= 'Z')))
-		continue;				//跳过空格和非英文字符
-	k = 0;						//k设置为字符串赋值的索引
-	for (j = 0; j < 24; j++)	//copy test to temp
+	for (i = 0; i < sizeof(test); i++)
 	{
-		if ((test[i] != ' ' && test[i] != '\0') && ((test[i] >= 'a' && test[i] <= 'z') || (test[i] >= 'A' && test[i] <= 'Z')))
+		if (test[i] == '\0')	break;	//字符结束标记
+		/*if (test[i] == ' '||(!((test[0]>='a' && test[0] <= 'z') || (test[0]>='A' && test[0] <= 'Z'))))	*/
+		if (!((test[0] >= 'a' && test[0] <= 'z') || (test[0] >= 'A' && test[0] <= 'Z')))
+			continue;				//跳过空格和非英文字符
+		k = 0;						//k设置为字符串赋值的索引
+		for (j = 0; j < 24; j++)	//copy test to temp
 		{
+			if ((test[i] != ' ' && test[i] != '\0') && ((test[i] >= 'a' && test[i] <= 'z') || (test[i] >= 'A' && test[i] <= 'Z')))
+			{
 			temp[k] = test[i];
 			i++;
 			k++;
-		}
-		else
-		{
-			temp[k] = '\0';
-			//i++;				error
-			break;
-		}
+			}
+			else
+			{
+				temp[k] = '\0';
+				//i++;				error
+				break;
+			}
 	}//string temp copy end;
-
-	puts(temp);
+		puts(temp);
 	if ((temp[0] <= 'z' && temp[0] >= 'a') || (temp[0] <= 'Z' && temp[0] >= 'A'))//确保不是“\0”、空格
 	{
 		for (int m = 0; m < sizeof(X); m++)
 		{
 			if (strcmp(strlwr(temp), strlwr(X[m].word)) != 0 && X[m].word[0] == '\0')//temp!=word and word[0] is null
 			{
-				strcpy(X[m].word, temp);//word 可能不够大
+				strcpy(X[m].word, temp);
 				X[m].count = 1;
 				break;
 			}
@@ -82,7 +81,6 @@ for (i = 0; i < sizeof(test); i++)
 			}
 		}
 	}
-
 	strcpy(temp, "                        ");//初始化temp
 }
 //*******************88888		end  kinoer
@@ -115,9 +113,6 @@ for (int cnt = 0; cnt < 3000; cnt++)
 //fwrite(&X[0], sizeof(X[0]), 3000, in);
 //		end out file result.dat
 //************************************
-printf("\t%d\n", &X[0].word == &X[1].word);//word 比较错误。可能是在装入时比较失误
-printf("*%s*\t", X[0].word);
-printf("*%s*\n", X[1].word);
 fclose(out);
 fclose(in);
 puts("ok");
@@ -128,23 +123,33 @@ return 0;
 void quicksort(list1 arr[], int low, int high)
 {
 	int left = low, right = high;
-	int temp = arr[low].count;
+	//int temp = arr[low].count;
+	list1 temp = arr[low];
+	list1 t;
 	while (low < high)
 	{
-		while ((arr[low].count >= arr[high].count) && (low < high))
+		while ((arr[high].count <= temp.count) && (low < high))
 			high--;
 		if (low < high)
-			arr[low++].count = arr[high].count;
-		while ((arr[low].count <= arr[high].count) && (low < high))
+		{
+			t = arr[low];
+			arr[low] = arr[high];
+			arr[high] = t;
+			low++;
+		}		
+		while ((arr[low].count >= temp.count) && (low < high))
 			low++;
 		if (low < high)
-			arr[high--].count = arr[low].count;
+		{
+			t = arr[high];
+			arr[high] = arr[low];
+			arr[low] = t;
+			high--;
+		}	
 	}
-	arr[low].count = temp;
+	arr[low] = temp;
 	if (left < low - 1)
-	{
 		quicksort(arr, left, low - 1);
-	}
 	if (low + 1 < right)
 		quicksort(arr, low + 1, right);
 }
